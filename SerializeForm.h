@@ -3,9 +3,41 @@
 
 #include "skse/GameData.h"
 
+/*
+
+SerialFormData is intended to be an easy framework for saving and loading Form data
+through the SKSE serialization process. If unexpected problems occur during the load
+process, an appropriate error code will be returned from the Deserialize method,
+indicating if the form originates from a mod that is no longer loaded, if the Form
+is a NULL form, or if the form is invalid (possibly due to corrupted cosave data)
+
+Example:
+
+	Serialization_Save --------------------------------------->
+		if (intfc->OpenRecord('WXYZ', kSerializationDataVersion))
+		{
+			SerialFormData entry(someObject->formID);
+			intfc->WriteRecordData(&entry, sizeof(entry));
+		}
+
+	Serialization_Load --------------------------------------->
+		if (type == 'WXYZ')
+		{
+			SerialFormData entry;
+			UInt32 sizeRead = intfc->ReadRecordData(&entry, sizeof(SerialFormData));
+			if (sizeRead == sizeof(SerialFormData))
+			{
+				TESForm someObject = NULL;
+				UInt32 result = entry.Deserialize(&someObject);
+				if (result == SerialFormData::kResult_Succeeded)
+					DoThingsWithSomeObject(someObject);
+			}
+		}
+
+*/
 
 
-struct SerialFormData
+class SerialFormData
 {
 public:
 	enum
@@ -20,10 +52,10 @@ public:
 	UInt32			formID;
 
 	SerialFormData();
-	SerialFormData(UInt32 formID);
-	SerialFormData(TESForm* form);
-	UInt32 Deserialize(UInt32* out_formID);
-	UInt32 Deserialize(TESForm** out_form);
+	SerialFormData(UInt32 formID); //Serialize from formID
+	SerialFormData(TESForm* form); //Serialize from form
+	UInt32 Deserialize(UInt32* out_formID); //Deserialize data and retrieve formID
+	UInt32 Deserialize(TESForm** out_form); //Deserialize data and retrieve form
 
 
 private:
