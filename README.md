@@ -1,0 +1,4 @@
+PluginLibrary
+=============
+
+SKSE Plugin Resources
