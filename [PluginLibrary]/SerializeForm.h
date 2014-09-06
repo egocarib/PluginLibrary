@@ -42,6 +42,10 @@ Example:
 
 */
 
+namespace
+{
+	static const char* RUNTIME_FORM = "RUNTIME_FORM";
+}
 
 class SerialFormData
 {
@@ -59,8 +63,6 @@ public:
 
 
 private:
-	static const char*	RUNTIME_FORM;
-
 	void Serialize(UInt32 fullFormID)
 	{
 		formID = fullFormID & 0x00FFFFFF;
@@ -135,8 +137,6 @@ public:
 	SerialFormData(UInt32 formID) : modName() { Serialize(formID); } //Serialize from formID
 	SerialFormData(TESForm* form) : modName() { Serialize(form->formID); } //Serialize from form
 };
-
-const char* SerialFormData::RUNTIME_FORM = "RUNTIME_FORM";
 
 
 #pragma warning(pop)
