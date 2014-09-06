@@ -2,6 +2,7 @@
 #define _SERIALIZE_FORM_H_
 
 #include "skse/GameData.h"
+#include "skse/GameForms.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4351)
@@ -28,8 +29,12 @@ Example:
 			{
 				TESForm someObject = NULL;
 				UInt32 result = entry.Deserialize(&someObject);
-				if (result == SerialFormData::kResult_Succeeded)
-					DoThingsWithSomeObject(someObject);
+				if (result != SerialFormData::kResult_Succeeded)
+				{
+					SerialFormData::OutputError(result);
+					return;
+				}
+				DoThingsWithSomeObject(someObject);
 			}
 		}
 
@@ -44,7 +49,7 @@ public:
 		kResult_Succeeded,
 		kResult_NullForm,
 		kResult_InvalidForm,
-		kResult_ModNotLoaded,
+		kResult_ModNotLoaded
 	};
 
 	char			modName[0x104];
@@ -75,7 +80,25 @@ private:
 
 
 public:
-	UInt32 Deserialize(UInt32* out_formID) //Deserialize data and retrieve formID
+	static void OutputError(UInt32 errorCode)
+	{
+		switch (errorCode)
+		{
+			case kResult_NullForm:
+				_MESSAGE("Deserialization Error: Null Form");
+				break;
+			case kResult_InvalidForm:
+				_MESSAGE("Deserialization Error: Invalid/Corrupt Form Data");
+				break;
+			case kResult_ModNotLoaded:
+				_MESSAGE("Deserialization Error: Missing Source Plugin, Form Cannot Be Loaded.");
+				break;
+			default:
+				break;
+		}
+	}
+
+	UInt32 Deserialize(UInt32* const out_formID) //Deserialize data and retrieve formID
 	{
 		(*out_formID) = 0;
 
@@ -98,7 +121,7 @@ public:
 		return (LookupFormByID(fullFormID)) ? kResult_Succeeded : kResult_InvalidForm;
 	}
 
-	UInt32 Deserialize(TESForm** out_form) //Deserialize data and retrieve form
+	UInt32 Deserialize(TESForm** const out_form) //Deserialize data and retrieve form
 	{
 		UInt32 formID;
 		UInt32 result = Deserialize(&formID);
