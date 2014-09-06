@@ -42,11 +42,6 @@ Example:
 
 */
 
-namespace
-{
-	static const char* RUNTIME_FORM = "RUNTIME_FORM";
-}
-
 class SerialFormData
 {
 public:
@@ -72,7 +67,7 @@ private:
 			UInt32 formIndex = (fullFormID & 0xFF000000) >> 24;
 
 			if (formIndex == 0xFF)
-				strcpy_s(modName, RUNTIME_FORM);
+				strcpy_s(modName, "RUNTIME_FORM");
 			else
 			{
 				DataHandler* pData = DataHandler::GetSingleton();
@@ -113,7 +108,7 @@ public:
 		UInt32 fullFormID = (pData) ? pData->GetModIndex(modName) : 0xFFFFFFFF;
 		if (fullFormID >= 0xFF)
 		{
-			if (strcmp(modName, RUNTIME_FORM) == 0)
+			if (strcmp(modName, "RUNTIME_FORM") == 0)
 				fullFormID = 0xFF;
 			else
 				return kResult_ModNotLoaded;
