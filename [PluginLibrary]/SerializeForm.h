@@ -1,6 +1,8 @@
 #ifndef _SERIALIZE_FORM_H_
 #define _SERIALIZE_FORM_H_
 
+#pragma once
+
 #include "skse/GameData.h"
 #include "skse/GameForms.h"
 
